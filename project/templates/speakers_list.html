@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="col-xs-12" style="padding: 0; top: 0; left: 0; height: 100vh; background-attachment: fixed; overflow: auto;">
+	<div class="col-xs-10" style="background: #003D5B; height: 15vh;">
+		<a href="{{url_for('committee')}}">
+			<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px;">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">GALMUN Software</h1>
+		</a>
+	</div>
+	<div class="col-xs-2" style="background: #003D5B; height: 15vh;">
+		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px; width: 0;">
+		<a href="{{url_for('users.logout')}}">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">Logout</h1>
+		</a>
+	</div>
+	<div class="col-xs-3" style="background: #8F8F8F; height: 85vh; padding: 0 2em; overflow-y: auto; overflow-x: hidden;">
+		<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: white;">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: white;">Speakers' List:</h1>
+		</div>
+		{% for d in sp_delegates %}
+		<a href="{{url_for('users.remove_speaker', sp_id=sp_list.id, del_con=d[0].alpha_2)}}">
+			<div class="col-xs-12">
+				<div class="col-xs-3" style=" height: 5em;">
+					<img src="{{d[1]}}" style="height: 3em; width: 3em; border-radius: 50%; margin: 1em;">
+				</div>
+				<div class="col-xs-9" style="height: 5em;">
+					<h1 style="font-family: 'Dosis', sans-serif; font-size: 2em; color: white;">{{d[0].name | truncate(8)}}</h1>
+				</div>
+			</div>
+		</a>
+		{% endfor %}
+	</div>
+	<div class="col-xs-9" style="height: 85vh; overflow: auto;">
+		<div class="col-xs-12">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 6em; color: #003D5B;">Delegates:</h1>
+		</div>
+		{% for d in delegates %}
+		<a href="{{url_for('users.add_speaker', sp_id=sp_list.id, del_con = d[0].country)}}">
+			<div class="col-xs-4" style="padding: 2em;">
+				<center>
+					<img src="{{d[1]}}" style="height: 15em; width: 15em; border-radius: 50%;">
+					<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; font-size: 3em;">{{d[2] | truncate(8)}}</p>
+				</center>
+			</div>
+		</a>
+		{% endfor %}
+		<div class="col-xs-12">
+			<center>
+				<a href="{{url_for('users.start_speakers_list',sp_id=sp_list.id)}}">
+					<button class="btn btn-sm btn-success" type="submit" style="font-family: 'Dosis', sans-serif; background: #003D5B; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">Go to the Speakers' List</button><br><br>
+				</a>
+			</center>
+		</div>
+	</div>
+{% endblock %}

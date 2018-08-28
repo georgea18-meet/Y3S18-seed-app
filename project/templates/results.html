@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="col-xs-12" style="padding: 0; top: 0; left: 0; height: 100vh; background-attachment: fixed; overflow: auto;">
+	<div class="col-xs-10" style="background: #003D5B; height: 15vh;">
+		<a href="{{url_for('committee')}}">
+			<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px;">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">GALMUN Software</h1><p id="speaker_time" style="display: none;">{{speaker_time}}</p><p id="fixed_speaker_time" style="display: none;">{{speaker_time}}</p>
+		</a>
+	</div>
+	<div class="col-xs-2" style="background: #003D5B; height: 15vh;">
+		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px; width: 0;">
+		<a href="{{url_for('users.logout')}}">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">Logout</h1>
+		</a>
+	</div>
+	<div class="col-xs-3" style="background: #8F8F8F; height: 85vh; padding: 0 2em; overflow-y: auto; overflow-x: hidden;">
+		<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: white;">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: white;">Best Delegate:</h1>
+		</div>
+		{% if delegates[0][0].points != 0 %}
+		{% if delegates[0][0].points != delegates[1][0].points or delegates[0][0].participations != delegates[1][0].participations %}
+		<div class="col-xs-12" style="margin-top: 1em;">
+			<center>
+				<img src="{{delegates[0][1]}}" style="height: 20em; width: 20em; border-radius: 50%;">
+				<h1 style="font-family: 'Dosis', sans-serif; font-size: 4em; color: white;">{{delegates[0][2] | truncate(8)}}</h1>
+			</center>
+		</div>
+		{% else %}
+		<div class="col-xs-12" style="margin-top: 1em;">
+			<center>
+				<img src="{{delegates[0][1]}}" style="height: 8em; width: 8em; border-radius: 50%;">
+				<img src="{{delegates[1][1]}}" style="height: 8em; width: 8em; border-radius: 50%;">
+			</center>
+		</div>
+		{% endif %}
+		{% endif %}
+	</div>
+	<div class="col-xs-9" style="padding: 0 2em;">
+		<div class="col-xs-12">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 6em; color: #003D5B;">Results:</h1>
+		</div>
+		<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
+			<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;"><b>Delegate</b></p>
+		</div>
+		<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
+			<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;"><b>Participations</b></p>
+		</div>
+		<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
+			<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;"><b>Quality</b></p>
+		</div>
+		<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
+			<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;"><b>Points</b></p>
+		</div>
+		<div class="col-xs-12" style="height: 55vh; overflow: auto;">
+		{% for d in delegates %}
+			<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
+				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{d[2] | truncate(8)}}</p>
+			</div>
+			<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
+				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{d[0].participations}}</p>
+			</div>
+			<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
+				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{d[3]}}</p>
+			</div>
+			<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
+				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{d[0].points}}</p>
+			</div>
+		{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}

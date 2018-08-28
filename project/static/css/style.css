@@ -1,3 +1,23 @@
-h1 {
-  color: blue;
+body, html {
+  height: 100%;
+  font-family: 'ABeeZee', sans-serif;
+}
+
+input[type=text], input[type=password] {
+  width: 80%;
+  height: 60px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #fefefe;
+  box-sizing: border-box;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+#login_signup_text :hover{
+  cursor: pointer;
+}
+
+.tab :hover{
+  background: rgba(143,143,143,0.5);
 }

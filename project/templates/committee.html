@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="col-xs-12" style="padding: 0; top: 0; left: 0; height: 100vh; background-attachment: fixed; overflow: auto;">
+	<div class="col-xs-10" style="background: #003D5B; height: 15vh;">
+		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px;">
+		<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">GALMUN Software</h1>
+	</div>
+	<div class="col-xs-2" style="background: #003D5B; height: 15vh;">
+		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px; width: 0;">
+		<a href="{{url_for('users.logout')}}">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">Logout</h1>
+		</a>
+	</div>
+	<div class="col-xs-3" style="background: #8F8F8F; height: 85vh; padding: 0 2em; overflow-y: auto; overflow-x: hidden;">
+		<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: white;">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: white;">Delegates:</h1>
+		</div>
+		{% for d in delegates %}
+		<!--<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: white;">
+			<div class="col-xs-3" style=" height: 5em;">
+				<img src="{{d[1]}}" style="height: 3em; width: 3em; border-radius: 50%; margin: 1em;">
+			</div>
+			<div class="col-xs-9" style="height: 5em;">
+				<h1 style="font-family: 'Dosis', sans-serif; font-size: 2em; color: white;">{{d[0].name | truncate(8)}}</h1>
+			</div>
+		</div>-->
+		<div class="col-xs-4">
+			<center>
+				<img src="{{d[1]}}" style="height: 3em; width: 3em; border-radius: 50%; margin: 1em;">
+			</center>
+		</div>
+		{% endfor %}
+	</div>
+	<div class="col-xs-9" style="padding: 0 2em;">
+		<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F;">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 6em; color: #003D5B;">{{committee.committee}}</h1>
+		</div>
+		<a href="{{url_for('users.speakers')}}"><div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;"><center>Speakers' List</center></div></a>
+		<a href=""><div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;"><center>Moderated Caucus</center></div></a>
+		{% if not lt %}
+		<a data-toggle="modal" href="#myModal"><div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;">
+		{% else %}
+		<a href="">
+		{% endif %}
+			<center>Lobbying Time</center></div></a>
+		<a href="{{url_for('results')}}"><div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;"><center>Results</center></div></a>
+		<div class="col-xs-12">
+			<h1 style="font-family: 'Dosis', sans-serif; color: #003D5B;">Feed:</h1>
+		</div>
+
+	</div>
+	<div class="modal fade" id="myModal" role="dialog" style="margin: 15vh;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background: #003D5B;">
+					<center><h1 style="font-family: 'Dosis', sans-serif; color: white;">Lobbying Time</h1></center>
+				</div>
+				<div class="modal-body">
+					<form action="{{ url_for('users.lobbyingTime') }}" method="POST">
+						<h2 style="font-family: 'Dosis', sans-serif; color: #003D5B;">Set time:</h2>
+						<center>
+							{{ lobbyingtimeform.csrf_token }}
+							<div class="col-xs-6" style="margin-left: 0; padding-right: 0;">
+				    			{{ lobbyingtimeform.minutes(placeholder="Minutes") }}
+				    		</div>
+				    		<div class="col-xs-6" style="margin-right: 0; padding-left: 0;">
+				    			{{ lobbyingtimeform.seconds(placeholder="Seconds") }}<br><br>
+				    		</div>
+				    		<button class="btn btn-lg" type="submit" style="font-family: 'Dosis', sans-serif; background: #003D5B; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">Start</button><br>
+				    	</center>
+				    </form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

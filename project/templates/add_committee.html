@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="col-xs-12" style="padding: 0; top: 0; left: 0; height: 100vh; background-attachment: fixed; overflow: auto;">
+	<div class="col-xs-10" style="background: #003D5B; height: 15vh;">
+		<a href="{{url_for('private_route')}}">
+			<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px;">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">GALMUN Software</h1>
+		</a>
+	</div>
+	<div class="col-xs-2" style="background: #003D5B; height: 15vh;">
+		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px; width: 0;">
+		<a href="{{url_for('users.logout')}}">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">Logout</h1>
+		</a>
+	</div>
+	<form action="{{ url_for('users.add_committee') }}" method="POST">
+		<div class="col-xs-6">
+			<center>
+				<h1 style="font-family: 'Dosis', sans-serif; font-size: 6em; color: #003D5B;">Committee:</h1>
+				<h1 style="font-family: 'Dosis', sans-serif; color: #003D5B;">Create a new committee</h1>
+				<input type="text" name="committee" placeholder="Committee" required>
+				<input type="text" name="topic" placeholder="Topic"><br><br>
+				<button class="btn btn-lg" type="submit" style="font-family: 'Dosis', sans-serif; background: #003D5B; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">Create</button>
+			</center>
+		</div>
+		<div class="col-xs-6">
+			<h1 style="font-family: 'Dosis', sans-serif; color: #003D5B;">Choose countries:</h1>
+			<div class="col-xs-12" style="max-height: 74vh; overflow: auto;">
+			{% for c in countries%}
+				<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; padding: 0;">
+					<div class="col-xs-1">
+						<br>
+						<input type="checkbox" name="{{c[0].name}}" value="{{c[0].name}}">	
+					</div>
+					<div class="col-xs-1">
+						<img src="{{c[1]}}" style="height: 2.5em; width: 2.5em; border-radius: 50%; margin: 0.5em;">
+					</div>
+					<div class="col-xs-10">
+						<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{c[0].name}}</p>
+					</div>
+				</div>
+			{% endfor %}
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}

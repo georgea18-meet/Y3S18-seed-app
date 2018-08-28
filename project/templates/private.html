@@ -1,4 +1,66 @@
 {% extends "layout.html" %}
 {% block content %}
-<h1>Private!</h1>
+<div class="col-xs-12" style="padding: 0; top: 0; left: 0; height: 100vh; background-attachment: fixed; overflow: auto;">
+	<div class="col-xs-10" style="background: #003D5B; height: 15vh;">
+		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px;">
+		<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">GALMUN Software</h1>
+	</div>
+	<div class="col-xs-2" style="background: #003D5B; height: 15vh; word-spacing: 1.5em;">
+		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px; width: 0;">
+		<a href="">
+			<i class="material-icons" style="display: inline; vertical-align: middle; color: white;">settings</i>
+		</a>
+		<a href="{{url_for('users.logout')}}">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">Logout</h1>
+		</a>
+	</div>
+	<div class="col-xs-3" style="background: #8F8F8F; height: 85vh; padding: 0 2em;">
+		<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: white;">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: white;">Updates:</h1>
+		</div>
+	</div>
+	<div class="col-xs-9" style="padding: 0 2em;">
+		<div class="col-xs-12">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 6em; color: #003D5B;">Committees:</h1>
+		</div>
+		<div class="col-xs-2" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh;">
+			<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;"><b>Committee</b></p>
+		</div>
+		<div class="col-xs-8" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh;">
+			<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;"><b>Topic</b></p>
+		</div>
+		<div class="col-xs-2" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh;">
+			<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;"><b>Code</b></p>
+		</div>
+		<div class="col-xs-12" style="height: 55vh; overflow: auto;">
+		{% for com in committiees %}
+			<div class="col-xs-2" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh;">
+				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{com.committee | truncate(10)}}</p>
+			</div>
+			<div class="col-xs-8" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh;">
+				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{com.topic | truncate(55)}}</p>
+			</div>
+			<div class="col-xs-2" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh;">
+				<div class="col-xs-9" style="padding: 0;">
+					<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{com.code}}</p>
+				</div>
+				<a href="{{url_for('users.delete_committee', committee=com.id)}}">
+					<div class="col-xs-3" style="padding: 0;">
+						<i class="material-icons" class="material-icons" style="font-size: 3em; color: #003D5B;"">delete</i>
+					</div>
+				</a>
+			</div>
+		{% endfor %}
+			<a href="{{url_for('users.add_committee')}}">
+				<div class="col-xs-1" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh;">
+					<i class="material-icons" style="font-size: 3em; color: #003D5B;">add_circle_outline</i> 
+				</div>
+				<div class="col-xs-11" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; padding: 0;">
+					<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">
+				add committee</p>
+				</div>
+			</a>
+		</div>
+	</div>
+</div>
 {% endblock %}

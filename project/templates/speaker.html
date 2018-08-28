@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="col-xs-12" style="padding: 0; top: 0; left: 0; height: 100vh; background-attachment: fixed; overflow: auto;">
+	<div class="col-xs-10" style="background: #003D5B; height: 15vh;">
+		<a href="{{url_for('committee')}}">
+			<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px;">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">GALMUN Software</h1><p id="speaker_time" style="display: none;">{{speaker_time}}</p><p id="fixed_speaker_time" style="display: none;">{{speaker_time}}</p>
+		</a>
+	</div>
+	<div class="col-xs-2" style="background: #003D5B; height: 15vh;">
+		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px; width: 0;">
+		<a href="{{url_for('users.logout')}}">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">Logout</h1>
+		</a>
+	</div>
+	<div class="col-xs-3" style="background: #8F8F8F; height: 85vh; padding: 0 2em; overflow-y: auto; overflow-x: hidden;">
+		<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: white;">
+			<a href="{{url_for('speakers',sp_id=sp_list.id)}}"><h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: white;">Speakers' List:</h1></a>
+		</div>
+		{% for d in sp_delegates %}
+		{% if d[0].alpha_2 != current_speaker[0].country %}
+		<a href="{{url_for('speaker', sp_id=sp_list.id, del_con=d[0].alpha_2)}}">
+		{% endif %}
+			<div class="col-xs-12">
+				<div class="col-xs-3" style=" height: 5em;">
+					{% if d[0].alpha_2 == current_speaker[0].country %}
+					<img src="{{d[1]}}" style="height: 3em; width: 3em; border-radius: 50%; margin: 1em; border-style: solid; border-color: #00FF00; border-width: 2px;">
+					{% else %}
+					<img src="{{d[1]}}" style="height: 3em; width: 3em; border-radius: 50%; margin: 1em;">
+					{% endif %}
+				</div>
+				<div class="col-xs-9" style="height: 5em;">
+					{% if d[0].alpha_2 == current_speaker[0].country %}
+					<h1 style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #00FF00;"><b>{{d[0].name | truncate(8)}}</b></h1>
+					{% else %}
+					<h1 style="font-family: 'Dosis', sans-serif; font-size: 2em; color: white;">{{d[0].name | truncate(8)}}</h1>
+					{% endif %}
+				</div>
+			</div>
+		{% if d[0].alpha_2 != current_speaker[0].country %}
+		</a>
+		{% endif %}
+		{% endfor %}
+	</div>
+	<div class="col-xs-9" style="height: 85vh; overflow: auto;">
+		<div class="col-xs-6">
+			<center>
+				<h1 style="font-family: 'Dosis', sans-serif; font-size: 6em; color: #003D5B;">{{current_speaker[2] | truncate(8)}}</h1>
+			</center><br>
+			<div class="col-xs-12">
+			<center>
+				<a href="{{url_for('users.grade_speech', speech=speech.id, grading=1)}}">
+					<button type="button" class="btn btn-success btn-lg" style="margin: 0.5em; font-family: 'Dosis', sans-serif;" id="good_btn">Good</button>
+				</a>
+				<a href="{{url_for('users.grade_speech', speech=speech.id, grading=0)}}">
+					<button type="button" class="btn btn-danger btn-lg" style="margin: 0.5em; margin-left: 0; font-family: 'Dosis', sans-serif;" id="notgood_btn">Not Good</button>
+				</a>
+			</center>
+		</div>
+		</div>
+		<div class="col-xs-6">
+			<center>
+				<h1 style="font-family: 'Dosis', sans-serif; font-size: 6em; color: #003D5B;" id="timer">00:00</h1>
+			</center><br>
+			<div class="col-xs-12">
+			<center>
+				<button type="button" class="btn btn-primary btn-lg" style="margin: 0.5em; font-family: 'Dosis', sans-serif;" onclick="timer()" id="start-stop">Start</button>
+				<button type="button" class="btn btn-primary btn-lg" style="margin: 0.5em; font-family: 'Dosis', sans-serif;" onclick="reset_timer()" id="reset">Reset</button>
+			</center>
+		</div>
+		</div>
+		<div class="col-xs-6">
+			<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #003D5B;">
+				<h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: #003D5B;">Points of Information:</h1>
+			</div>
+			<div class="col-xs-12" style="overflow: auto; height: 40vh;">
+				{% for d in POIs %}
+				{% if d[0].country != current_speaker[0].country %}
+				<div class="col-xs-6">
+					<div class="col-xs-4">
+						{% if d[3].grading == 0 %}
+						<a href="{{url_for('users.remove_POI', speech=speech.id, del_con=d[2])}}">
+						{% endif %}
+							<img src="{{d[1]}}" style="height: 3em; width: 3em; border-radius: 50%; margin: 1em; z-index: -1;">
+						{% if d[3].grading == 0 %}
+						</a>
+					</div>
+					<a href="{{url_for('users.grade_POI', poi=d[3].id, grading=1)}}">
+						<div class="col-xs-4" style="display: inline;">
+							{% if d[3].grading == 0 %}
+							<i class="material-icons text-success" style="font-size: 3em; margin-top: 0.25em; margin-left: 0.25em;">check</i>
+							{% endif %}
+						</div>
+					</a>
+					<a href="{{url_for('users.grade_POI', poi=d[3].id, grading=0)}}">
+						<div class="col-xs-4" style="display: inline;">
+							{% if d[3].grading == 0 %}
+							<i class="material-icons text-danger" style="font-size: 3em; margin-top: 0.25em; margin-left: 0.25em;">close</i>
+							{% endif %}
+						</div>
+					</a>
+				</div>
+					{% else %}
+					</div>
+					<div class="col-xs-8">
+						<h1 style="font-family: 'Dosis', sans-serif; font-size: 2em;">{{d[0].name}}</h1>
+					</div>
+				</div>
+				{% endif %}
+				{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+		<div class="col-xs-6">
+			<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #003D5B;">
+				<h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: #003D5B;">Delegates:</h1>
+			</div>
+			<div class="col-xs-12" style="overflow: auto; height: 40vh;">
+				{% for d in all_delegates %}
+				{% if d[0].country != current_speaker[0].country and not d[3]%}
+				<a href="{{url_for('users.add_POI', speech=speech.id, del_con=d[0].country)}}">
+					<div class="col-xs-3">
+						<div style="height: 3em; width: 3em; border-radius: 50%; margin: 1em; position: relative;">
+							<img src="{{d[1]}}" style="height: 3em; width: 3em; border-radius: 50%; margin: 1em; z-index: -1; opacity: 0.7;">
+							<div style="position: absolute; transform: translate(-50%, -50%); top: 1.25em; left: 1.25em; font-family: 'Dosis', sans-serif; font-size: 3em; color: #003D5B; font-size: 2em;">
+								{{d[0].country}}
+							</div>
+						</div>
+					</div>
+				</a>
+				{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
