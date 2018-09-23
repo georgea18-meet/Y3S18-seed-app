@@ -54,13 +54,21 @@
 		<div class="col-xs-12" style="height: 55vh; overflow: auto;">
 		{% for d in delegates %}
 			<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
-				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{d[2] | truncate(8)}}</p>
+				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">
+					{% if d[0].country == 'GB'%}
+					UK
+					{% elif d[0].country == 'AE' %}
+					UAE
+					{% else %}
+					{{d[2] | truncate(8)}}
+					{% endif %}
+				</p>
 			</div>
 			<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
 				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{d[0].participations}}</p>
 			</div>
 			<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
-				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{d[3]}}</p>
+				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{d[3] | truncate(8)}}</p>
 			</div>
 			<div class="col-xs-3" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; height: 7.5vh; text-align: center;">
 				<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; display: inline;">{{d[0].points}}</p>

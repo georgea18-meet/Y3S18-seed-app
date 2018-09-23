@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="col-xs-12" style="padding: 0; top: 0; left: 0; height: 100vh; background-attachment: fixed; overflow: auto;">
+<div class="col-xs-12" style="padding: 0; top: 0; left: 0; height: 100vh; background-attachment: fixed; overflow: auto;" >
 	<div class="col-xs-10" style="background: #003D5B; height: 15vh;">
 		<a href="{{url_for('committee')}}">
 			<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px;">
-			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">GALMUN Software</h1><p id="speaker_time" style="display: none;">{{speaker_time}}</p><p id="fixed_speaker_time" style="display: none;">{{speaker_time}}</p>
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">GALMUN Software</h1><p id="speaker_time" style="display: none;">{{timer_time}}</p><p id="url" style="display: none;">{{url_for('committee')}}</p>
 		</a>
 	</div>
 	<div class="col-xs-2" style="background: #003D5B; height: 15vh;">
@@ -15,7 +15,7 @@
 	</div>
 	<div col-xs-12>
 		<center>
-			<h1 style="font-family: 'Dosis', sans-serif; font-size: 30em; color: #003D5B;" id="lobbying_timer">00:00</h1>
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 30em; color: #003D5B;" id="lobbying_timer">{{mins}}:{{secs}}</h1>
 		</center>
 	</div>
 </div>

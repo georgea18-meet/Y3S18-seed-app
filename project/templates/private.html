@@ -7,7 +7,7 @@
 	</div>
 	<div class="col-xs-2" style="background: #003D5B; height: 15vh; word-spacing: 1.5em;">
 		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px; width: 0;">
-		<a href="">
+		<a data-toggle="modal" href="#settingsModal" onclick="show_main()">
 			<i class="material-icons" style="display: inline; vertical-align: middle; color: white;">settings</i>
 		</a>
 		<a href="{{url_for('users.logout')}}">
@@ -16,7 +16,7 @@
 	</div>
 	<div class="col-xs-3" style="background: #8F8F8F; height: 85vh; padding: 0 2em;">
 		<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: white;">
-			<h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: white;">Updates:</h1>
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: white;">{{current_user.username}}:</h1>
 		</div>
 	</div>
 	<div class="col-xs-9" style="padding: 0 2em;">
@@ -60,6 +60,52 @@
 				add committee</p>
 				</div>
 			</a>
+		</div>
+	</div>
+	<div class="modal fade" id="settingsModal" role="dialog" style="margin: 15vh;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background: #003D5B;">
+					<center><h1 style="font-family: 'Dosis', sans-serif; color: white;" id="modal_title">Settings</h1></center>
+				</div>
+				<div id="settings_modal" class="modal-body" style="height: 40vh; overflow: auto;">
+					<div class="col-xs-12" id="options"><center>
+						<div class="col-xs-6 pointer" onclick="show_account_settings()">
+							<center>
+								<i class="material-icons" style="font-size: 10em; color: #003D5B;">account_circle</i>
+								<h2 style="font-family: 'Dosis', sans-serif; color: #003D5B;">Account</h2>
+							</center>
+						</div>
+						<div class="col-xs-6 pointer" onclick="show_points_settings()">
+							<center>
+								<i class="material-icons" style="font-size: 10em; color: #003D5B;">star_border</i>
+								<h2 style="font-family: 'Dosis', sans-serif; color: #003D5B;">Points System</h2>
+							</center>
+						</div>
+					</center></div>
+					<div class="col-xs-12" id="account_settings" style="display: none;">
+						<span class="pointer">
+							<i class="material-icons pointer" style="color: rgba(0,61,91,0.7);font-size: 3em; float: left;" onclick="show_main()">arrow_back</i>
+						</span><center>
+						<form action="{{url_for('users.edit')}}" method="POST">
+							<h2 style="font-family: 'Dosis', sans-serif; color: #003D5B;">Edit your account's information</h2>
+			    			{{ accountsettingsform.csrf_token }}
+			    			{{ accountsettingsform.username(placeholder="Conference") }}<br> 
+							{{ accountsettingsform.old_password(placeholder="Old Password") }}<br>
+							{{ accountsettingsform.new_password(placeholder="New Password") }}<br>
+			    			{{ accountsettingsform.confirm(placeholder="Confirm Password") }}<br><br>
+			    			<button class="btn btn-lg" type="submit" style="font-family: 'Dosis', sans-serif; background: #003D5B; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">Submit</button><br>
+						</form>
+					</center></div>
+				<div class="col-xs-12" id="grading_system_settings" style="display: none;">
+						<span class="pointer">
+							<i class="material-icons pointer" style="color: rgba(0,61,91,0.7);font-size: 3em; float: left;" onclick="show_main()">arrow_back</i>
+						</span><center>
+						<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlh62BSuUkpIu1OzyfG-02DyhXQUA4x7PzYN-fJBBKoNgM5JoAZA">
+					</center></div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

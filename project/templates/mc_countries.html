@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="col-xs-12" style="padding: 0; top: 0; left: 0; height: 100vh; background-attachment: fixed; overflow: auto;">
+	<div class="col-xs-10" style="background: #003D5B; height: 15vh;">
+		<a href="{{url_for('committee')}}">
+			<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px;">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">GALMUN Software</h1>
+		</a>
+	</div>
+	<div class="col-xs-2" style="background: #003D5B; height: 15vh;">
+		<img src="http://galmun.net/img/logo.png" style="height: 10vh; margin: 10px; width: 0;">
+		<a href="{{url_for('users.logout')}}">
+			<h1 style="font-family: 'Dosis', sans-serif; display: inline; vertical-align: middle; color: white;">Logout</h1>
+		</a>
+	</div>
+	<div class="col-xs-3" style="background: #8F8F8F; height: 85vh; padding: 0 2em; overflow-y: auto; overflow-x: hidden;">
+		<div class="col-xs-12" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: white;">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 3em; color: white;">Topic:</h1>
+		</div>
+		<h1 style="font-family: 'Dosis', sans-serif; font-size: 2em; color: white;">{{topic}}</h1>
+	</div>
+	<div class="col-xs-9" style="height: 85vh; overflow: auto;">
+		<div class="col-xs-12">
+			<h1 style="font-family: 'Dosis', sans-serif; font-size: 6em; color: #003D5B;">Delegates:</h1>
+		</div>
+		{% for d in delegates %}
+		<a href="{{url_for('users.createMCspeaker', mc_id=mc_id, del_con=d[0].country)}}">
+			<div class="col-xs-3" style="padding: 2em;">
+				<center>
+					<img src="{{d[1]}}" style="height: 10em; width: 10em; border-radius: 50%;">
+					<p style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; font-size: 2.5em;">{{d[2] | truncate(8)}}</p>
+				</center>
+			</div>
+		</a>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

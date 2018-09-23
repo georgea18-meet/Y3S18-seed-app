@@ -36,12 +36,13 @@
 			<h1 style="font-family: 'Dosis', sans-serif; font-size: 6em; color: #003D5B;">{{committee.committee}}</h1>
 		</div>
 		<a href="{{url_for('users.speakers')}}"><div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;"><center>Speakers' List</center></div></a>
-		<a href=""><div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;"><center>Moderated Caucus</center></div></a>
+		<a data-toggle="modal" href="#mcModal"><div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;"><center>Moderated Caucus</center></div></a>
 		{% if not lt %}
-		<a data-toggle="modal" href="#myModal"><div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;">
+		<a data-toggle="modal" href="#ltModal">
 		{% else %}
-		<a href="">
+		<a href="{{url_for('lobbyingTime', lt_id=lt_ob.id)}}">
 		{% endif %}
+			<div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;">
 			<center>Lobbying Time</center></div></a>
 		<a href="{{url_for('results')}}"><div class="col-xs-3 tab" style="font-family: 'Dosis', sans-serif; font-size: 2em; color: #003D5B; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #8F8F8F; padding: 0;"><center>Results</center></div></a>
 		<div class="col-xs-12">
@@ -49,7 +50,7 @@
 		</div>
 
 	</div>
-	<div class="modal fade" id="myModal" role="dialog" style="margin: 15vh;">
+	<div class="modal fade" id="ltModal" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header" style="background: #003D5B;">
@@ -73,5 +74,40 @@
 			</div>
 		</div>
 	</div>
+
+	</div>
+	<div class="modal fade" id="mcModal" role="dialog" style="margin: 5vh;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background: #003D5B;">
+					<center><h1 style="font-family: 'Dosis', sans-serif; color: white;">Moderated Caucus</h1></center>
+				</div>
+				<div class="modal-body">
+					<form action="{{ url_for('users.moderatedCaucusing') }}" method="POST">
+						<h2 style="font-family: 'Dosis', sans-serif; color: #003D5B;">Topic:</h2>
+						<center>
+							{{ lobbyingtimeform.csrf_token }}
+							{{ moderatedcaucusform.topic(placeholder="Topic") }}
+						</center>
+						<h2 style="font-family: 'Dosis', sans-serif; color: #003D5B;">Set speaker time:</h2>
+						<center>
+							<div class="col-xs-6" style="margin-left: 0; padding-right: 0;">
+				    			{{ moderatedcaucusform.minutes(placeholder="Minutes") }}
+				    		</div>
+				    		<div class="col-xs-6" style="margin-right: 0; padding-left: 0;">
+				    			{{ moderatedcaucusform.seconds(placeholder="Seconds") }}<br><br>
+				    		</div>
+				    		<button class="btn btn-lg" type="submit" style="font-family: 'Dosis', sans-serif; background: #003D5B; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">Start</button><br>
+				    	</center>
+				    </form>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+<style type="text/css">
+	#topic{
+		width: 86%;
+	}
+</style>
 {% endblock %}

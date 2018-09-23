@@ -21,3 +21,7 @@ input[type=text], input[type=password] {
 .tab :hover{
   background: rgba(143,143,143,0.5);
 }
+
+.pointer :hover{
+  cursor: pointer;
+}

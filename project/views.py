@@ -5,11 +5,11 @@ from flask import (
 from flask import render_template
 from flask_login import login_required, current_user
 from project import db
-from project.forms import RegisterForm, LoginForm, CodeForm, LobbyingTimeForm
-from project.models import User, Committee, Delegate, SpeakersList, Speech, PointOfInformation, LobbyingTime
+from project.forms import RegisterForm, LoginForm, CodeForm, LobbyingTimeForm, ModeratedCaucusForm, AccountSettings
+from project.models import User, Committee, Delegate, SpeakersList, Speech, PointOfInformation, LobbyingTime, ModeratedCaucusing, mcSpeech
 from project.flags_list import flags
 
-import pycountry, time
+import pycountry, time, math
 
 from . import app
 
@@ -29,13 +29,15 @@ def index():
 @app.route('/private')
 @login_required
 def private_route():
+	accountsettingsform = AccountSettings(request.form)
 	committiees = Committee.query.filter_by(conference=current_user.id).all()
-	return render_template('private.html', committiees=committiees)
+	return render_template('private.html', committiees=committiees, accountsettingsform = AccountSettings(request.form))
 
 @app.route('/committee')
 @login_required
 def committee():
 	lobbyingtimeform = LobbyingTimeForm(request.form)
+	moderatedcaucusform = ModeratedCaucusForm(request.form)
 	committee = Committee.query.filter_by(code=current_user.username).first()
 	current = LobbyingTime.query.filter_by(committee=committee.id, finish_time=-1).first()
 	if (current is None):
@@ -50,7 +52,7 @@ def committee():
 	for c in countries:
 		if c != "":
 			delegates.append((pycountry.countries.get(alpha_2=c),flags[pycountry.countries.get(alpha_2=c).name]))
-	return render_template('committee.html', committee=committee, delegates=delegates, lobbyingtimeform=lobbyingtimeform, lt=lt)
+	return render_template('committee.html', committee=committee, delegates=delegates, lobbyingtimeform=lobbyingtimeform, lt=lt, lt_ob=current, moderatedcaucusform=moderatedcaucusform)
 
 @app.route('/speakerslist/<int:sp_id>')
 @login_required
@@ -145,4 +147,46 @@ def results():
 @login_required
 def lobbyingTime(lt_id):
 	lt = LobbyingTime.query.filter_by(id=lt_id).first()
-	return render_template('lobbying.html')
+	timer_time = math.ceil(lt.duration-(time.time()-lt.start_time))
+	if timer_time>0:
+		secs = timer_time%60
+		mins = int((timer_time-secs)/60)
+		if secs<10:
+			secs='0'+str(secs)
+		if mins<10:
+			mins='0'+str(mins)
+	else:
+		secs = '00'
+		mins = '00'
+	return render_template('lobbying.html',timer_time=timer_time,mins=mins,secs=secs)
+
+@app.route('/moderatedcaucusing/pick/<int:mc_id>')
+@login_required
+def mcChooseCountry(mc_id):
+	com = Committee.query.filter_by(code=current_user.username).first()
+	all_countries = db.session.query(Delegate).filter_by(committee=com.id).all()
+	delegates = []
+	mc = ModeratedCaucusing.query.filter_by(id=mc_id).first()
+	for n in all_countries:
+		delegates.append((n,flags[pycountry.countries.get(alpha_2=n.country).name],pycountry.countries.get(alpha_2=n.country).name))
+	return render_template('mc_countries.html', delegates=delegates, topic=mc.topic, mc_id=mc.id)
+
+@app.route('/moderatedcaucusing/speech/<int:mc_sp_id>')
+@login_required
+def mc_speaker(mc_sp_id):
+	com = Committee.query.filter_by(code=current_user.username).first()
+	speech = mcSpeech.query.filter_by(id=mc_sp_id).first()
+	mc = ModeratedCaucusing.query.filter_by(id=speech.caucusing).first()
+	delegate = Delegate.query.filter_by(id=speech.delegate).first()
+	current_speaker = (delegate,flags[pycountry.countries.get(alpha_2=delegate.country).name],pycountry.countries.get(alpha_2=delegate.country).name)
+	speaker_time = mc.speaker_time
+	all_countries = db.session.query(Delegate).filter_by(committee=com.id).all()
+	delegates = []
+	for n in all_countries:
+		delegates.append((n,flags[pycountry.countries.get(alpha_2=n.country).name],pycountry.countries.get(alpha_2=n.country).name))
+	return render_template('mc.html', current_speaker=current_speaker, speaker_time=speaker_time, delegates=delegates, mc_id=mc.id, mc_sp=mc_sp_id)
+
+@app.route('/invalid/<int:msg>')
+def error(msg):
+	titles = ["Invalid input!"]
+	return render_template('error.html',title=titles[msg])

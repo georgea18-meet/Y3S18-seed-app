@@ -6,8 +6,8 @@ from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy.exc import IntegrityError
 
 from project import db
-from project.forms import RegisterForm, LoginForm, CodeForm, LobbyingTimeForm
-from project.models import User, Committee, Delegate, SpeakersList, Conference, Speech, GradingSystem, PointOfInformation, LobbyingTime
+from project.forms import RegisterForm, LoginForm, CodeForm, LobbyingTimeForm, ModeratedCaucusForm, AccountSettings
+from project.models import User, Committee, Delegate, SpeakersList, Conference, Speech, GradingSystem, PointOfInformation, LobbyingTime, ModeratedCaucusing, mcSpeech
 from project.flags_list import flags
 
 import pycountry
@@ -62,7 +62,34 @@ def register():
                     return redirect(url_for('private_route'))
     else:
         return render_template('register.html', form=form)
-                
+
+@users_bp.route('/edit',methods=['GET','POST'])
+@login_required
+def edit():
+    form = AccountSettings(request.form)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            user = current_user
+            conf = Conference.query.filter_by(username=current_user.username).first()
+            new_username = form.username.data
+            old_password = form.old_password.data
+            new_password = form.new_password.data
+            confirm = form.confirm.data
+            if user.check_password(old_password) and new_password==confirm:
+                if new_username!="":
+                    user.username = new_username
+                    conf.username = new_username
+                if new_password!="":
+                    user.set_password(new_password)
+                db.session.commit()
+                if current_user.username == new_username:
+                    return redirect(url_for('private_route'))
+                else:
+                    return('fuck')
+            else:
+                return Response('<p>Failure due to either:</p><ul><li>The password you entered is incorrect.</li>or<li>The new password does not match the password you entered in the confirmation field.</li></ul>')
+        else:
+            return Response('<p>Invalid form</p>')
 
 @users_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -80,7 +107,7 @@ def login():
                 next_page = url_for('private_route')
             return redirect(next_page)
         else:
-            return Response("<p>invalid form</p>")
+            return Response('<p>Invalid form</p>')
     return render_template('login.html', form=form)
 
 @users_bp.route('/add_committee', methods=['GET','POST'])
@@ -311,6 +338,24 @@ def grade_POI(poi, grading):
     db.session.commit()
     return redirect(url_for('speaker', sp_id=sp_list.id, del_con=Delegate.query.filter_by(id=speech.delegate).first().country))
 
+@users_bp.route('/gradeMC/<int:mc_sp>/<int:grading>')
+@login_required
+def grade_MC(mc_sp, grading):
+    speech = mcSpeech.query.filter_by(id=mc_sp).first()
+    mc = ModeratedCaucusing.query.filter_by(id=speech.caucusing).first()
+    com = Committee.query.filter_by(id=mc.committee).first()
+    gs = GradingSystem.query.filter_by(conference=com.conference).first()
+    delegate = Delegate.query.filter_by(id=speech.delegate).first()
+    if grading == 0:
+        #POI.grading = -1
+        delegate.points = delegate.points+gs.mc_bad
+    elif grading == 1:
+        #POI.grading = 1
+        delegate.points = delegate.points+gs.mc_good
+    delegate.participations = delegate.participations+1
+    db.session.commit()
+    return redirect(url_for('mc_speaker', mc_sp_id=speech.id))
+
 @users_bp.route('/lobbyingTime', methods=['GET','POST'])
 @login_required
 def lobbyingTime():
@@ -319,22 +364,75 @@ def lobbyingTime():
         if form.validate_on_submit():
             com = Committee.query.filter_by(code=current_user.username).first()
             current = LobbyingTime.query.filter_by(committee=com.id, finish_time=-1).first()
-            if (current is None) or (time.time()-current.start_time>current.duration):
-                if time.time()-current.start_time>current.duration:
-                    current.finish_time = time.time()
+            if (current is None):
+                lt = False
+            elif (time.time()-current.start_time>current.duration):
+                current.finish_time = time.time()
+                lt = False
+            else:
+                lt = True
+            if not lt:
                 lt = LobbyingTime()
                 lt.committee = com.id
                 lt.start_time = time.time()
                 lt.finish_time = -1
-                lt.duration = (form.minutes.data)*60+form.seconds.data
-                db.session.add(sp_list)
+                mins = form.minutes.data
+                if mins is None:
+                    mins = 0
+                secs = form.seconds.data
+                if secs is None:
+                    secs = 0
+                lt.duration = mins*60+secs
+                db.session.add(lt)
                 db.session.commit()
             else:
                 lt = current
-            return redirect('lobbyingTime',lt_id=lt.id)
+            return redirect(url_for('lobbyingTime',lt_id=lt.id))
         else:
             return('invalid form')
-            
+
+@users_bp.route('/moderatedCaucusing', methods=['GET','POST'])
+@login_required
+def moderatedCaucusing():
+    form = ModeratedCaucusForm(request.form)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            com = Committee.query.filter_by(code=current_user.username).first()
+            mc = ModeratedCaucusing()
+            mc.committee = com.id
+            mc.topic = form.topic.data
+            mc.start_time = (time.localtime(time.time())[3]*100)+time.localtime(time.time())[4]
+            mc.finish_time = -1
+            mc.countries = ""
+            mins = form.minutes.data
+            if mins is None:
+                mins = 0
+            secs = form.seconds.data
+            if secs is None:
+                secs = 0
+            mc.speaker_time = mins*60+secs
+            db.session.add(mc)
+            db.session.commit()
+            mc = ModeratedCaucusing.query.filter_by(committee=com.id, start_time=mc.start_time).first()
+            return redirect(url_for('mcChooseCountry', mc_id=mc.id))
+        else:
+            return('invalid form')
+
+@users_bp.route('/createMCspeaker/<mc_id>/<del_con>')
+@login_required
+def createMCspeaker(mc_id, del_con):
+    mc = ModeratedCaucusing.query.filter_by(id=mc_id).first()
+    speech = mcSpeech()
+    speech.caucusing = mc_id
+    speech.delegate = Delegate.query.filter_by(country=del_con, committee=mc.committee).first().id
+    db.session.add(speech)
+    if mc.countries == "":
+        mc.countries = del_con
+    else:
+        mc.countries += " "+del_con
+    db.session.commit()
+    return redirect(url_for('mc_speaker', mc_sp_id=speech.id))
+
 
 @users_bp.route('/logout')
 @login_required

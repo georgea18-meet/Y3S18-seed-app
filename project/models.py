@@ -77,6 +77,18 @@ class SpeakersList(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+class ModeratedCaucusing(db.Model):
+
+    __tablename__ = "moderatedcaucusings"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    committee = db.Column(db.Integer, nullable=False)
+    topic = db.Column(db.String)
+    countries = db.Column(db.String)
+    start_time = db.Column(db.Integer)
+    finish_time = db.Column(db.Integer)
+    speaker_time = db.Column(db.Integer)
+
 class Speech(db.Model):
 
     __tablename__ = "speeches"
@@ -85,6 +97,14 @@ class Speech(db.Model):
     speakers_list = db.Column(db.Integer, nullable=False)
     delegate = db.Column(db.Integer, nullable=False)
     pois = db.Column(db.String)
+
+class mcSpeech(db.Model):
+
+    __tablename__ = "mcspeeches"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    caucusing = db.Column(db.Integer, nullable=False)
+    delegate = db.Column(db.Integer, nullable=False)
 
 class GradingSystem(db.Model):
 
